@@ -6,20 +6,35 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
 import spring.modelo.relacional.domain.enums.TipoCliente;
 
+@Entity
 public class Cliente implements Serializable {
 	
 	
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
 	private String email;
-	private String CpfOuCnpj;
-	private TipoCliente tipo;
+	private String cpfOuCnpj;
+	private Integer tipo;
 	
+	@OneToMany(mappedBy="cliente")
 	List<Endereco> enderecos = new ArrayList<>();
+	
+	@ElementCollection//avisa que é entidade fraca
+	@CollectionTable(name="TELEFONE")
 	//set - conj que não aceita valores repetidos
 	private Set<String> telefones = new HashSet<>();
 	
@@ -32,8 +47,16 @@ public class Cliente implements Serializable {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
-		CpfOuCnpj = cpfOuCnpj;
-		this.tipo = tipo;
+		this.cpfOuCnpj = cpfOuCnpj;
+		this.tipo = tipo.getCod();
+	}
+
+	public Set<String> getTelefones() {
+		return telefones;
+	}
+
+	public void setTelefones(Set<String> telefones) {
+		this.telefones = telefones;
 	}
 
 	public Integer getId() {
@@ -61,19 +84,19 @@ public class Cliente implements Serializable {
 	}
 
 	public String getCpfOuCnpj() {
-		return CpfOuCnpj;
+		return cpfOuCnpj;
 	}
 
 	public void setCpfOuCnpj(String cpfOuCnpj) {
-		CpfOuCnpj = cpfOuCnpj;
+		this.cpfOuCnpj = cpfOuCnpj;
 	}
 
 	public TipoCliente getTipo() {
-		return tipo;
+		return TipoCliente.toEnum(tipo);
 	}
 
 	public void setTipo(TipoCliente tipo) {
-		this.tipo = tipo;
+		this.tipo = tipo.getCod();
 	}
 
 	public List<Endereco> getEnderecos() {

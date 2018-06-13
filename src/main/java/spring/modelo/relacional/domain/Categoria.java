@@ -27,10 +27,10 @@ public class Categoria implements Serializable {
 	private String nome;
 	
 	//controla o json da requisição para não entrar no loop 
-	//no lado que uqero os objetos assiciados
+	//no lado que uqero os objetos
 	@JsonManagedReference
 	@ManyToMany(mappedBy="categorias")
-	private List<Produto> produtos = new ArrayList<>();
+	private List<Produto> produtos = new ArrayList<Produto>();
 
 	public List<Produto> getProdutos() {
 		return produtos;
