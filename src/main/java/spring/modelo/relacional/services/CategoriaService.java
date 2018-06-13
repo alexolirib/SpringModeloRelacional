@@ -19,7 +19,8 @@ public class CategoriaService {
 	public Categoria buscar(Integer id) {
 		//Optional obj container (encapsular se o obj está instanciado ou não)
 		Optional<Categoria> obj = repo.findById(id);
-		return obj.orElse(null);
+		return obj.orElseThrow(()-> new ObjectNotFoundException("Objeto não encontrado! id:"
+				+ id + ", tipo:" + Categoria.class.getName()));//nome da classe
 	}
 	
 }
