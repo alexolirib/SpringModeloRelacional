@@ -1,15 +1,16 @@
 package spring.modelo.relacional.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -22,21 +23,34 @@ public class Pedido implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private Date instante;	
+	
 	@ManyToOne
+	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
 	
 	//é preciso botar esse cascade, pois se não iria da um erro de entidade transiente(apagar junto - updates)
 	@OneToOne(cascade=CascadeType.ALL, mappedBy="pedido")
 	private Pagamento pagamento;
-	private Endereco enderecoDeEntrega;	
-	private List<Produto> itens = new ArrayList<>();
 	
-	public Pedido(Integer id, Date instante, Cliente cliente, Pagamento pagamento, Endereco enderecoDeEntrega) {
+	@ManyToOne
+	@JoinColumn(name="endereco_de_entrega_id")
+	private Endereco enderecoDeEntrega;	
+	
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
+	}
+
+	private Set<ItemPedido> itens = new HashSet<>();
+ 	
+	public Pedido(Integer id, Date instante, Cliente cliente, Endereco enderecoDeEntrega) {
 		super();
 		this.id = id;
 		this.instante = instante;
 		this.cliente = cliente;
-		this.pagamento = pagamento;
 		this.enderecoDeEntrega = enderecoDeEntrega;
 	}
 	
