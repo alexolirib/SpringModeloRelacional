@@ -1,7 +1,10 @@
 package spring.modelo.relacional.domain;
 
+import javax.persistence.Entity;
+
 import spring.modelo.relacional.domain.enums.EstadoPagamento;
 
+@Entity
 public class PagamentoComCartao extends Pagamento{
 	
 	private static final long serialVersionUID = 1L;
