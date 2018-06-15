@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import spring.modelo.relacional.domain.enums.EstadoPagamento;
 
 @Entity
@@ -24,6 +26,8 @@ public abstract class Pagamento  implements Serializable {
 	private Integer id;
 	private Integer estado;
 	
+	
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="pedido_id")//campo que mapeia com o pedido
 	@MapsId//para mapear o id do pedido junto com o do pagamento

@@ -10,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity // entidade do jpa
 // éuma interface os objetos dela pode ser convertido sequencias de
 // bytes(gravado em arquivos, trafegado em redes)
@@ -28,7 +26,6 @@ public class Categoria implements Serializable {
 	
 	//controla o json da requisição para não entrar no loop 
 	//no lado que uqero os objetos
-	@JsonManagedReference
 	@ManyToMany(mappedBy="categorias")
 	private List<Produto> produtos = new ArrayList<Produto>();
 
