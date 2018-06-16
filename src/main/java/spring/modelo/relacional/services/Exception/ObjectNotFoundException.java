@@ -1,4 +1,4 @@
- package spring.modelo.relacional.services;
+ package spring.modelo.relacional.services.Exception;
 
 public class ObjectNotFoundException extends RuntimeException{
 
