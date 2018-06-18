@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import spring.modelo.relacional.domain.Categoria;
+import spring.modelo.relacional.dto.CategoriaDTO;
 import spring.modelo.relacional.repositories.CategoriaRepository;
 import spring.modelo.relacional.services.Exception.DataIntegrityException;
 import spring.modelo.relacional.services.Exception.ObjectNotFoundException;
@@ -55,6 +59,19 @@ public class CategoriaService {
 	public List<Categoria> findAll() {
 		
 		return repo.findAll();
+	}
+	
+	//Page capsula informações sobre a pginação 
+	//findPage(Qual pagina eu quero, numero de linha na pagina , ordenar por qual atributo,  direção (arcendente  ou decescente )
+	public Page<Categoria> findPage(Integer page, Integer linesPerPAge, String orderBy, String direction){
+		//Direction.valueOf (converte tudo para direction)
+		PageRequest pageRequest = PageRequest.of(page, linesPerPAge, Direction.valueOf(direction), orderBy);
+		return repo.findAll(pageRequest);
+	}
+	
+	//instancia uma categoria partir do DTO
+	public Categoria fromDto(CategoriaDTO objDTO) {
+		return new Categoria(objDTO.getId(), objDTO.getNome());
 	}
 
 }
