@@ -8,42 +8,98 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import spring.modelo.relacional.domain.Cidade;
 import spring.modelo.relacional.domain.Cliente;
+import spring.modelo.relacional.domain.Endereco;
+import spring.modelo.relacional.domain.enums.TipoCliente;
 import spring.modelo.relacional.dto.ClienteDTO;
+import spring.modelo.relacional.dto.ClienteNewDto;
 import spring.modelo.relacional.repositories.ClienteRepository;
+import spring.modelo.relacional.repositories.EnderecoRepository;
+import spring.modelo.relacional.services.Exception.DataIntegrityException;
 import spring.modelo.relacional.services.Exception.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
-	
+
 	@Autowired
 	private ClienteRepository repo;
 	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
+
 	public Cliente findById(Integer id) {
 		Optional<Cliente> obj = repo.findById(id);
-		return obj.orElseThrow(()-> new ObjectNotFoundException("Objeto não encontrado! id: "
-				+ id +", tipo: " + Cliente.class.getName()));
+		return obj.orElseThrow(() -> new ObjectNotFoundException(
+				"Objeto não encontrado! id: " + id + ", tipo: " + Cliente.class.getName()));
 	}
 
 	public List<Cliente> findAll() {
-		
+
 		return repo.findAll();
 	}
-	
-	public Page<Cliente> findPage(Integer page, Integer linePerPages, String orderBy, String direction){
+
+	public Page<Cliente> findPage(Integer page, Integer linePerPages, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page, linePerPages, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
 	}
-	
+
 	public Cliente Update(Cliente cliente) {
-		findById(cliente.getId());
-		return repo.save(cliente);
+		Cliente newCliente = findById(cliente.getId());
+		updateDate(newCliente, cliente);
+		return repo.save(newCliente);
+	}
+
+	private void updateDate(Cliente newCliente, Cliente cliente) {
+		newCliente.setNome(cliente.getNome());
+		newCliente.setEnderecos(cliente.getEnderecos());
+	}
+
+	public Cliente fromDTO(ClienteDTO objDTO) {
+		// retorna null os campos que o DTO não possui
+		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null);
+	}
+
+	public Cliente fromDTO(ClienteNewDto objDTO) {
+		Cliente cli = new Cliente(null, objDTO.getNome(), objDTO.getEmail(), objDTO.getCpfOuCnpj(), TipoCliente.toEnum(objDTO.getTipo()));
+		//escontrar a cidade 
+		Cidade cid = new Cidade(objDTO.getCidadeId(), null, null);
+		
+		Endereco end = new Endereco(null , objDTO.getLogradouro(), objDTO.getNumero(), objDTO.getComplemento(), objDTO.getBairro(), objDTO.getCep(), cli, cid);
+		
+		cli.getEnderecos().add(end);
+		cli.getTelefones().add(objDTO.getTelefone1());
+		
+		if(objDTO.getTelefone2() != null) {
+
+			cli.getTelefones().add(objDTO.getTelefone2());
+		}
+		
+		if(objDTO.getTelefone3() != null) {
+
+			cli.getTelefones().add(objDTO.getTelefone3());
+		}
+		
+		return cli;
+	}
+
+	public void remove(Integer id) {
+		findById(id);
+		
+		try {
+			repo.deleteById(id);
+		} catch (Exception e) {
+			throw new DataIntegrityException("Não é possível excluir pois tem entidades relacionadas");
+		}
 	}
 	
-	
-	public Cliente fromDTO(ClienteDTO objDTO) {
-		//retorna null os campos que o DTO não possui
-		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null);
+	@Transactional
+	public Cliente insert(Cliente obj) {
+		obj.setId(null);
+		obj = repo.save(obj);
+		enderecoRepository.saveAll(obj.getEnderecos());		
+		return 	obj;	
 	}
 }
