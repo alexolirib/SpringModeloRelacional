@@ -20,8 +20,7 @@ import spring.modelo.relacional.domain.enums.TipoCliente;
 
 @Entity
 public class Cliente implements Serializable {
-	
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -31,22 +30,21 @@ public class Cliente implements Serializable {
 	private String email;
 	private String cpfOuCnpj;
 	private Integer tipo;
-	
-	@JsonIgnore
-	@OneToMany(mappedBy="cliente")
-	private List<Pedido> pedidos = new ArrayList<>();
-	
 
-	@OneToMany(mappedBy="cliente")
+	@JsonIgnore
+	@OneToMany(mappedBy = "cliente")
+	private List<Pedido> pedidos = new ArrayList<>();
+
+	@OneToMany(mappedBy = "cliente")
 	private List<Endereco> enderecos = new ArrayList<>();
-	
-	@ElementCollection//avisa que é entidade fraca
-	@CollectionTable(name="TELEFONE")
-	//set - conj que não aceita valores repetidos
+
+	@ElementCollection // avisa que é entidade fraca
+	@CollectionTable(name = "TELEFONE")
+	// set - conj que não aceita valores repetidos
 	private Set<String> telefones = new HashSet<>();
-	
+
 	public Cliente() {
-		
+
 	}
 
 	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo) {
@@ -55,7 +53,7 @@ public class Cliente implements Serializable {
 		this.nome = nome;
 		this.email = email;
 		this.cpfOuCnpj = cpfOuCnpj;
-		this.tipo = tipo.getCod();
+		this.tipo = (tipo == null) ? null : tipo.getCod();
 	}
 
 	public Set<String> getTelefones() {
@@ -113,7 +111,7 @@ public class Cliente implements Serializable {
 	public void setEnderecos(List<Endereco> enderecos) {
 		this.enderecos = enderecos;
 	}
-	
+
 	public List<Pedido> getPedidos() {
 		return pedidos;
 	}
