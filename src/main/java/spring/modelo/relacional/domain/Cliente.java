@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,6 +29,11 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	
+	//se eu quiser deixar um campo único 
+	//porem fazendo isso ficamos com pouco controles das possíveis exceções que podem acontecer
+	//pois irá ser do spring data, logo iremos personalizar o nosso (começando pelo repository)
+	@Column(unique=true)
 	private String email;
 	private String cpfOuCnpj;
 	private Integer tipo;
@@ -34,8 +41,9 @@ public class Cliente implements Serializable {
 	@JsonIgnore
 	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
-
-	@OneToMany(mappedBy = "cliente")
+	
+	//quando excluir o cliente quero que vá em cascada para enderecos 
+	@OneToMany(mappedBy = "cliente", cascade= CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 
 	@ElementCollection // avisa que é entidade fraca

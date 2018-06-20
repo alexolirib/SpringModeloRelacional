@@ -54,7 +54,7 @@ public class ClienteService {
 
 	private void updateDate(Cliente newCliente, Cliente cliente) {
 		newCliente.setNome(cliente.getNome());
-		newCliente.setEnderecos(cliente.getEnderecos());
+		newCliente.setEmail(cliente.getEmail());
 	}
 
 	public Cliente fromDTO(ClienteDTO objDTO) {
@@ -91,10 +91,11 @@ public class ClienteService {
 		try {
 			repo.deleteById(id);
 		} catch (Exception e) {
-			throw new DataIntegrityException("Não é possível excluir pois tem entidades relacionadas");
+			throw new DataIntegrityException("Não é possível excluir ,pois tem pedidos relacionados");
 		}
 	}
 	
+	//já que irá salvar mais de 1 coisa no banco
 	@Transactional
 	public Cliente insert(Cliente obj) {
 		obj.setId(null);

@@ -2,21 +2,46 @@ package spring.modelo.relacional.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import spring.modelo.relacional.services.validation.ClienteInsert;
+
+//4º vindo da camada de serviço irei inserir no DTO a anotation customizada 
+@ClienteInsert
 public class ClienteNewDto implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	//adicionar junto com o cliente um endereco com telefones
+	@NotEmpty(message="Preechimento obrigatório")
+	@Length(min=5, max=80, message="O tamanho da categoria deve ter entre 5 a 80 caractera")
 	private String nome;
+	
+	@NotEmpty(message="Preechimento obrigatório")
+	@Email(message="e-mail inválido")
 	private String email;
+	
+	//como cpf e cnpj depende do tipo que o usuário informar teremos que fazer
+	//anotation customizada para essa validação de campo
+	//ou então existe a anotação @CPF e @CNPJ
+	@NotEmpty(message="Preechimento obrigatório")
 	private String cpfOuCnpj;
 	private Integer tipo;
 	
+	@NotEmpty(message="Preechimento obrigatório")
 	private String logradouro;
+	
+	@NotEmpty(message="Preechimento obrigatório")
 	private String numero;
 	private String complemento;
 	private String bairro;
+	
+	@NotEmpty(message="Preechimento obrigatório")
 	private String cep;
 
+	@NotEmpty(message="Preechimento obrigatório")
 	private String telefone1;
 	private String telefone2;
 	private String telefone3;
