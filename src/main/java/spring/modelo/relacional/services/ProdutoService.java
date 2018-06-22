@@ -36,6 +36,8 @@ public class ProdutoService {
 		
 		//buscando as categorias com a lista de id daquele produto
 		List<Categoria> categorias =  categoriaRepository.findAllById(ids);
-		return repo.search(nome, categorias, pageRequest);
+		//return repo.search(nome, categorias, pageRequest);
+		return repo.findDistinctByNomeContainingAndCategoriasIn(nome, categorias, pageRequest);
+
 	}
 }
