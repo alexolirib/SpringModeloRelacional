@@ -40,4 +40,8 @@ public class ProdutoService {
 		return repo.findDistinctByNomeContainingAndCategoriasIn(nome, categorias, pageRequest);
 
 	}
+
+	public List<Produto> findAll() {
+		return repo.findAll();		
+	}
 }

@@ -31,7 +31,7 @@ public class ProdutoResource {
 	}
 	
 	//vai ter que passar como parametro na url essa consulta
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value="/page",method = RequestMethod.GET)
 	public ResponseEntity<Page<ProdutoDTO>> findPage(
 			@RequestParam(value="nome", defaultValue="") String nome,
 			@RequestParam(value="categorias", defaultValue="") String categorias,
@@ -50,5 +50,9 @@ public class ProdutoResource {
 		return ResponseEntity.ok().body(listDTO);
 	}
 	
-	
+	@RequestMapping(value= "/", method=RequestMethod.GET)
+	public ResponseEntity<List<Produto>> findAll(){
+		List<Produto> listObj = service.findAll();
+		return ResponseEntity.ok().body(listObj);
+	}
 }
