@@ -11,11 +11,14 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import spring.modelo.relacional.domain.enums.EstadoPagamento;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)//por conta da herança é preciso fazer isso Tabelap
+//superclasse abstrata, defina que haverá um campo adicional @type (fazendo isso para a inserção
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 public abstract class Pagamento  implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

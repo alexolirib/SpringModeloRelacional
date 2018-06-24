@@ -2,9 +2,13 @@ package spring.modelo.relacional.domain;
 
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import spring.modelo.relacional.domain.enums.EstadoPagamento;
 
 @Entity
+//qual o nome irá identificar a classe
+@JsonTypeName("pagamentoComCartao")
 public class PagamentoComCartao extends Pagamento{
 	
 	private static final long serialVersionUID = 1L;
