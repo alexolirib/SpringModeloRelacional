@@ -36,6 +36,9 @@ public class PedidoService {
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
 	
+	@Autowired
+	private ClienteService clienteService;
+	
 	public Pedido findById(Integer id) {
 		Optional<Pedido> obj = repo.findById(id);
 		return obj.orElseThrow(()-> new ObjectNotFoundException("Objeto não encontrado! : id"
@@ -47,6 +50,8 @@ public class PedidoService {
 		obj.setId(null);		
 		//new Date instancia data atual 
 		obj.setInstante(new Date());
+		//para poder fazer o toString do cliente
+		obj.setCliente(clienteService.findById(obj.getCliente().getId()));
 		//pedido acabando de inserir estará pendente
 		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		//pagamento tem conhecer o pedido
@@ -62,11 +67,14 @@ public class PedidoService {
 		pagamentoRepository.save(obj.getPagamento());
 		for(ItemPedido ip: obj.getItens()) {
 			ip.setDesconto(0.0);
+			//para saberconseguir pegar o produto para o toString
+			ip.setProduto(findByProduto(ip));
 			//preciso botar o preço do pedido o mesmo do produto
-			ip.setPreco(findByProduto(ip).getPreco());
+			ip.setPreco(ip.getProduto().getPreco());
 			ip.setPedido(obj);
 		}
 		itemPedidoRepository.saveAll(obj.getItens());
+		System.out.println(obj);
 		return obj;
 	}
 	
