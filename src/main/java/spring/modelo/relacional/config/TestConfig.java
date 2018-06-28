@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import spring.modelo.relacional.services.DBService;
 import spring.modelo.relacional.services.*;
 
 @Configuration
@@ -27,6 +26,7 @@ public class TestConfig {
 	//instanciar na injeção sempre o mockEmailService 
 	@Bean
 	public EmailService emailService() {
-		return new MockEmailService();
+		//return new MockEmailService();
+		return new SmtpEmailService();
 	}
 }
