@@ -42,6 +42,8 @@ public class PedidoService {
 	@Autowired
 	private EmailService emailService;
 	
+	@Autowired EnderecoService enderecoService;
+	
 	public Pedido findById(Integer id) {
 		Optional<Pedido> obj = repo.findById(id);
 		return obj.orElseThrow(()-> new ObjectNotFoundException("Objeto não encontrado! : id"
@@ -55,6 +57,8 @@ public class PedidoService {
 		obj.setInstante(new Date());
 		//para poder fazer o toString do cliente
 		obj.setCliente(clienteService.findById(obj.getCliente().getId()));
+		//para poder fazer o toString do endereco
+		obj.setEnderecoDeEntrega(enderecoService.findById(obj.getEnderecoDeEntrega().getId()));
 		//pedido acabando de inserir estará pendente
 		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		//pagamento tem conhecer o pedido
@@ -79,6 +83,7 @@ public class PedidoService {
 		itemPedidoRepository.saveAll(obj.getItens());
 		//System.out.println(obj);
 		emailService.sendOrderConfirmationHtmlEmail(obj);
+		emailService.sendOrderConfirmationAdmEmail(obj);
 		return obj;
 	}
 	

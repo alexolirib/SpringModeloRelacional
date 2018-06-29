@@ -12,13 +12,20 @@ public interface EmailService {
 	//envia email de confirmação irá utilizar o outro método
 	void sendOrderConfirmationEmail(Pedido obj);
 	
+	
 	//antes de enviar e ajeita o SimpleMailMessage é precis ajeitar um Pedido
 	void sendEmail(SimpleMailMessage msg); 
 	
 	//--------------------Enviar email com html(mesmo métodos sendo html)--------------------
-	
+
 	void sendOrderConfirmationHtmlEmail(Pedido obj);
+	
 	
 	//como email vai ser enviado será feito como o html, tem ser - MimeMessage
 	void sendHtmlEmail(MimeMessage msg);
+	
+	//---------------------------------para o adm-------------------------------------------
+	
+	void sendOrderConfirmationAdmEmail(Pedido obj);
+	
 }

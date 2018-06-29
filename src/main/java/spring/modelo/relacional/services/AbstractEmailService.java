@@ -91,4 +91,24 @@ public abstract class AbstractEmailService implements EmailService {
 
 		return mimeMessage;
 	}
+	
+	// para o adm da aplicacao
+	@Override
+	public void sendOrderConfirmationAdmEmail(Pedido obj) {
+		SimpleMailMessage sm = prepareSimpleMailMessageAdmFromPedido(obj);
+		
+		sendEmail(sm);
+	}
+	
+	protected SimpleMailMessage prepareSimpleMailMessageAdmFromPedido(Pedido obj) {
+		SimpleMailMessage sm = new SimpleMailMessage();
+		sm.setFrom(sender);
+		sm.setTo(sender);
+		sm.setSubject("Novo Pedido Feito! Código: " + obj.getId());
+		sm.setSentDate(new Date(System.currentTimeMillis()));
+		sm.setText("Parabéns tem um novo pedido!\n\n" + obj.toString()
+		+ "\n"+ obj.getEnderecoDeEntrega().toString());
+		return sm;
+	}
+	
 }
