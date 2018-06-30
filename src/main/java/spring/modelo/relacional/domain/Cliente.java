@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +20,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import spring.modelo.relacional.domain.enums.Perfil;
 import spring.modelo.relacional.domain.enums.TipoCliente;
 
 @Entity
@@ -29,21 +32,26 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
-	
-	//se eu quiser deixar um campo único 
-	//porem fazendo isso ficamos com pouco controles das possíveis exceções que podem acontecer
-	//pois irá ser do spring data, logo iremos personalizar o nosso (começando pelo repository)
-	@Column(unique=true)
+
+	// se eu quiser deixar um campo único
+	// porem fazendo isso ficamos com pouco controles das possíveis exceções que
+	// podem acontecer
+	// pois irá ser do spring data, logo iremos personalizar o nosso (começando pelo
+	// repository)
+	@Column(unique = true)
 	private String email;
 	private String cpfOuCnpj;
 	private Integer tipo;
 
 	@JsonIgnore
+	private String senha;
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
-	
-	//quando excluir o cliente quero que vá em cascada para enderecos 
-	@OneToMany(mappedBy = "cliente", cascade= CascadeType.ALL)
+
+	// quando excluir o cliente quero que vá em cascada para enderecos
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 
 	@ElementCollection // avisa que é entidade fraca
@@ -51,17 +59,24 @@ public class Cliente implements Serializable {
 	// set - conj que não aceita valores repetidos
 	private Set<String> telefones = new HashSet<>();
 
-	public Cliente() {
+	// sempre quando buscar algum cliente irá buscar junto os seu perfil
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "PERFIS")
+	private Set<Integer> perfis = new HashSet<>();
 
+	public Cliente() {
+		addPerfil(Perfil.CLIENTE);
 	}
 
-	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo) {
+	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo, String senha) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.cpfOuCnpj = cpfOuCnpj;
 		this.tipo = (tipo == null) ? null : tipo.getCod();
+		this.senha = senha;
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	public Set<String> getTelefones() {
@@ -128,6 +143,22 @@ public class Cliente implements Serializable {
 		this.pedidos = pedidos;
 	}
 
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+	//já que fica armazenado como tipo int, converter aqui para tipo perfil
+	public Set<Perfil> getPerfis() {
+		return perfis.stream().map(p-> Perfil.toEnum(p)).collect(Collectors.toSet());
+	}
+	
+	public void addPerfil(Perfil perfil) {
+		perfis.add(perfil.getCod());
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -152,4 +183,7 @@ public class Cliente implements Serializable {
 			return false;
 		return true;
 	}
+
+	
+
 }

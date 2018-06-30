@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,10 @@ import spring.modelo.relacional.services.Exception.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
+	
+	//criptografar a senha (injeção ocorre no arquivo securityConfig)
+	@Autowired
+	private BCryptPasswordEncoder bcpe;
 
 	@Autowired
 	private ClienteRepository repo;
@@ -59,11 +64,13 @@ public class ClienteService {
 
 	public Cliente fromDTO(ClienteDTO objDTO) {
 		// retorna null os campos que o DTO não possui
-		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null);
+		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null, null);
 	}
 
 	public Cliente fromDTO(ClienteNewDto objDTO) {
-		Cliente cli = new Cliente(null, objDTO.getNome(), objDTO.getEmail(), objDTO.getCpfOuCnpj(), TipoCliente.toEnum(objDTO.getTipo()));
+		Cliente cli = new Cliente(null, objDTO.getNome(), objDTO.getEmail(),
+				objDTO.getCpfOuCnpj(), TipoCliente.toEnum(objDTO.getTipo()),
+				bcpe.encode(objDTO.getSenha()));/*bcpe.encode(criptografa a string, ou seja a senha*/
 		//escontrar a cidade 
 		Cidade cid = new Cidade(objDTO.getCidadeId(), null, null);
 		
