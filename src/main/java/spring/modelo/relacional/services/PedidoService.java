@@ -40,6 +40,9 @@ public class PedidoService {
 	private ClienteService clienteService;
 	
 	@Autowired
+	private ProdutoService produtoService;
+	
+	@Autowired
 	private EmailService emailService;
 	
 	@Autowired EnderecoService enderecoService;
@@ -75,7 +78,7 @@ public class PedidoService {
 		for(ItemPedido ip: obj.getItens()) {
 			ip.setDesconto(0.0);
 			//para saberconseguir pegar o produto para o toString
-			ip.setProduto(findByProduto(ip));
+			ip.setProduto(produtoService.findById(ip.getProduto().getId()));
 			//preciso botar o preço do pedido o mesmo do produto
 			ip.setPreco(ip.getProduto().getPreco());
 			ip.setPedido(obj);
@@ -85,12 +88,6 @@ public class PedidoService {
 		emailService.sendOrderConfirmationHtmlEmail(obj);
 		emailService.sendOrderConfirmationAdmEmail(obj);
 		return obj;
-	}
-	
-	private Produto findByProduto(ItemPedido ip) {
-		Optional<Produto> obj = produtoRepository.findById(ip.getProduto().getId());
-		return obj.orElseThrow(()->new ObjectNotFoundException("Objeto não encontrado! : id"
-				+ ip.getProduto().getId() + ", tipo: " + Produto.class.getName()));
 	}
 
 }

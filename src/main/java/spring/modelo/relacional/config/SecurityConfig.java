@@ -27,7 +27,8 @@ public class SecurityConfig extends  WebSecurityConfigurerAdapter {
 	//aqui quais os caminhos por padrão vão está liberado
 	private static final String[] PUBLIC_MATCHERS = {
 			//**- tudo
-			"/h2-console/**"
+			"/h2-console/**",
+			"/pedidos/**"
 	};
 	
 	//usuario que não está logado só é permitido ler (não pode alterar, excluir e inserir
@@ -40,7 +41,8 @@ public class SecurityConfig extends  WebSecurityConfigurerAdapter {
 	//método do WebSecurityConfigurerAdapter
 	@Override
 	protected void configure(HttpSecurity http) throws Exception{
-		 //ActiveProfiles - pegando os profiles ativos do meu projeto e tiver no test vou querer acessar o h2 e libera o acesso
+		 //ActiveProfiles - pegando os profiles ativos do meu projeto e 
+		//tiver no test vou querer acessar o h2 e libera o acesso
 		if(Arrays.asList(env.getActiveProfiles()).contains("test")) {
 			http.headers().frameOptions().disable();
 		}
@@ -61,7 +63,8 @@ public class SecurityConfig extends  WebSecurityConfigurerAdapter {
 	}
 	
 	//configuração básica de cors 
-    //requisições de multiplas fontes no back seja aceita é precisa informar e é feita nesse método 
+    //requisições de multiplas fontes no back seja aceita é
+	//precisa informar e é feita nesse método 
 	  @Bean
 	  CorsConfigurationSource corsConfigurationSource() {
 	    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
