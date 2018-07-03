@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +64,8 @@ public class ProdutoResource {
 		return ResponseEntity.ok().body(listObj);
 	}
 	
+
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(value= "/", method=RequestMethod.POST)
 	public ResponseEntity<Void> insert(@Valid @RequestBody ProdutoNewDto objDto){
 		List<Categoria> categorias = service.pushCategorias(objDto);
