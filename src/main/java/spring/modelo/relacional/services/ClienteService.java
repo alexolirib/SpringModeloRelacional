@@ -14,11 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.modelo.relacional.domain.Cidade;
 import spring.modelo.relacional.domain.Cliente;
 import spring.modelo.relacional.domain.Endereco;
+import spring.modelo.relacional.domain.enums.Perfil;
 import spring.modelo.relacional.domain.enums.TipoCliente;
 import spring.modelo.relacional.dto.ClienteDTO;
 import spring.modelo.relacional.dto.ClienteNewDto;
 import spring.modelo.relacional.repositories.ClienteRepository;
 import spring.modelo.relacional.repositories.EnderecoRepository;
+import spring.modelo.relacional.security.UserSS;
+import spring.modelo.relacional.services.Exception.AuthorizationException;
 import spring.modelo.relacional.services.Exception.DataIntegrityException;
 import spring.modelo.relacional.services.Exception.ObjectNotFoundException;
 
@@ -36,6 +39,14 @@ public class ClienteService {
 	private EnderecoRepository enderecoRepository;
 
 	public Cliente findById(Integer id) {
+		//pega o usuario logado
+		UserSS user = UserService.authenticad();
+		//se o cliente logado não for ADMIN e não for o cliente do id
+		//solicitado, lançar uma exceção
+		if(user==null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("acesso negado");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! id: " + id + ", tipo: " + Cliente.class.getName()));

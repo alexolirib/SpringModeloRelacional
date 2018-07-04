@@ -4,18 +4,22 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import spring.modelo.relacional.domain.Cliente;
 import spring.modelo.relacional.domain.ItemPedido;
 import spring.modelo.relacional.domain.PagamentoComBoleto;
 import spring.modelo.relacional.domain.Pedido;
-import spring.modelo.relacional.domain.Produto;
 import spring.modelo.relacional.domain.enums.EstadoPagamento;
 import spring.modelo.relacional.repositories.ItemPedidoRepository;
 import spring.modelo.relacional.repositories.PagamentoRepository;
 import spring.modelo.relacional.repositories.PedidoRepository;
-import spring.modelo.relacional.repositories.ProdutoRepository;
+import spring.modelo.relacional.security.UserSS;
+import spring.modelo.relacional.services.Exception.AuthorizationException;
 import spring.modelo.relacional.services.Exception.ObjectNotFoundException;
 
 @Service
@@ -29,9 +33,6 @@ public class PedidoService {
 	
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
-	
-	@Autowired
-	private ProdutoRepository produtoRepository;
 	
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
@@ -88,6 +89,21 @@ public class PedidoService {
 		emailService.sendOrderConfirmationHtmlEmail(obj);
 		emailService.sendOrderConfirmationAdmEmail(obj);
 		return obj;
+	}
+	
+	//pedido que terá que fazer a regra de negócio para retornar o pedido somente
+	//daquele usuario que estiver logado no sistema
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		
+		UserSS user = UserService.authenticad();
+		if(user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		
+		Cliente cliente = clienteService.findById(user.getId());
+		return repo.findByCliente(cliente, pageRequest);
 	}
 
 }
