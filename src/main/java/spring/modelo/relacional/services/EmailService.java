@@ -4,6 +4,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.SimpleMailMessage;
 
+import spring.modelo.relacional.domain.Cliente;
 import spring.modelo.relacional.domain.Pedido;
 
 public interface EmailService {
@@ -27,5 +28,8 @@ public interface EmailService {
 	//---------------------------------para o adm-------------------------------------------
 	
 	void sendOrderConfirmationAdmEmail(Pedido obj);
+
+
+	void sendNewPasswordEmail(Cliente cliente, String newPass);
 	
 }

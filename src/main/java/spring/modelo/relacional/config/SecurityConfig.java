@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
 
 	// para os usuario possam se cadastrar
-	private static final String[] PUBLIC_MATCHERS_POST = { "/clientes/**" };
+	private static final String[] PUBLIC_MATCHERS_POST = { "/clientes/**", "/auth/forgot/**" };
 
 	// método do WebSecurityConfigurerAdapter
 	@Override
