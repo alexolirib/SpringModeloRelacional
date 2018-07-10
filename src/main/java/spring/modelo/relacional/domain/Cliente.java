@@ -182,8 +182,6 @@ public class Cliente implements Serializable {
 		} else if (!enderecos.equals(other.enderecos))
 			return false;
 		return true;
-	}
-
-	
+	}	
 
 }

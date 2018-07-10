@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import spring.modelo.relacional.domain.Cliente;
@@ -86,5 +87,11 @@ public class ClienteResource {
 		service.remove(id);
 		
 		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(value="/picture", method=RequestMethod.POST)
+	public ResponseEntity<Void> uploadProfilePicture(@RequestParam(name="file") MultipartFile file){
+		URI uri = service.uploadProfilePictore(file);
+		return ResponseEntity.created(uri).build();
 	}
 }
