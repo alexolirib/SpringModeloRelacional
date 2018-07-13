@@ -155,4 +155,20 @@ public class ClienteService {
 		return s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg")
 				, fileName, "image");
 	}
+
+	public Cliente findByEmail(String email){
+		UserSS user = UserService.authenticad();
+		//se é nulo ou igual o admin
+		if(user == null|| !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())){
+			throw new AuthorizationException("Acesso negado");
+		}
+
+		Cliente obj =  repo.findByEmail(email);
+		if(obj == null) {
+			throw new ObjectNotFoundException(
+					"Objeto não encontrado! id " + user.getId() + ", Tipo " + Cliente.class.getName());
+		}
+		return  obj;
+	}
+
 }
