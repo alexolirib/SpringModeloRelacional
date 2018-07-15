@@ -46,7 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	// usuario que não está logado só é permitido ler (não pode alterar, excluir e
 	// inserir
-	private static final String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
+	private static final String[] PUBLIC_MATCHERS_GET = {
+			"/produtos/**",
+			"/categorias/**",
+			"/estados/**"};
 
 	// para os usuario possam se cadastrar
 	private static final String[] PUBLIC_MATCHERS_POST = {
