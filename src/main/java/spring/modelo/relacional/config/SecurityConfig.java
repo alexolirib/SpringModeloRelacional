@@ -104,10 +104,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	// precisa informar e é feita nesse método
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
+		//para aceitar o put e delete
+		CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+		configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		// applyPermitDefaultValues() - aqui estou dando acesso básico,
 		// "/**" - todos os caminhos
-		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
 
